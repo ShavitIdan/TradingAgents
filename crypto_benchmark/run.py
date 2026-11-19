@@ -185,6 +185,8 @@ def execute(plan: dict) -> dict:
                 row["finished_at"] = datetime.now(UTC).isoformat()
                 row["elapsed_seconds"] = time.monotonic() - began
                 row["usage"] = stats.get_stats()
+                row["usage"]["tool_calls"] = None
+                row["tool_usage_basis"] = "unmeasured_model_callbacks_only"
                 row["token_usage_basis"] = "reported_metadata_only_may_be_incomplete"
                 if not row["usage"].get("tokens_in") and not row["usage"].get("tokens_out"):
                     row["usage"]["tokens_in"] = row["usage"]["tokens_out"] = None

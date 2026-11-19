@@ -92,6 +92,8 @@ class RunnerTests(unittest.TestCase):
             logs = [json.loads(line) for line in (output / "decisions.jsonl").read_text().splitlines()]
             self.assertEqual(logs[1]["rating"], "Hold")
             self.assertEqual(logs[0]["usage"]["llm_calls"], 4)
+            self.assertIsNone(logs[0]["usage"]["tool_calls"])
+            self.assertEqual(logs[0]["tool_usage_basis"], "unmeasured_model_callbacks_only")
             self.assertIsNone(logs[0]["usage"]["tokens_in"])
             self.assertEqual(logs[0]["settings"]["deep_think_llm"], "deep-test")
             self.assertEqual(logs[0]["settings"]["max_tool_rounds"], 3)
@@ -148,6 +150,11 @@ class RunnerTests(unittest.TestCase):
             logs = (output / "decisions.jsonl").read_text().splitlines()
             self.assertEqual(len(logs), 1)
             self.assertEqual(json.loads(logs[0])["error"], "RuntimeError: plan limit reached")
+            self.assertEqual(json.loads(logs[0])["usage"], {
+                "llm_calls": 1, "tool_calls": None, "tokens_in": 9, "tokens_out": 3,
+            })
+            self.assertEqual(json.loads(logs[0])["tool_usage_basis"],
+                             "unmeasured_model_callbacks_only")
             self.assertEqual((output / "decisions.csv").read_text().strip(), "timestamp,ticker,rating")
 
 

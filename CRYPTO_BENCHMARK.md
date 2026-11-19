@@ -69,6 +69,8 @@ Each decision has isolated memory. This prevents learning from outcomes generate
 
 The run saves `run.json`, `decisions.jsonl`, `decisions.csv`, and the upstream reports. Audit records contain model settings, code provenance, elapsed time, and reported token metadata. Missing usage metadata is not treated as free inference.
 
+Tool calls are recorded as unmeasured because the runner's callbacks attach to model clients, not data tools. A null tool count does not mean the agents skipped data retrieval.
+
 ## Fetch prices and replay decisions
 
 ```bash
